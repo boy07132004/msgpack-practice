@@ -11,14 +11,10 @@ This repo is a project for converting format between JSON string and MessagePack
 ## How to use it?
 
 ```python
-from MessagePack import MsgPack
-pack = MsgPack()
-pack.jsonString_to_pack('{"input": "the JSON string"}')
+import msgpack_cm
+msgPackOutput = msgpack_cm.json_to_msgpack('{"input": "the JSON string"}')
+jsonStringOutput = msgpack_cm.msgpack_to_json('''msgpack byte string''')
 ```
 
-> The default float type is IEEE 754 double precision. If you need IEEE 754 single precision, use `pack = MsgPack(useFloat=True)` instead.
+> The default float type is IEEE 754 double precision. If you need IEEE 754 single precision, use `msgpack_cm.json_to_msgpack('{"input": "the JSON string"}', useFloat=True)` instead.
 > 
-
-## Future
-
-- MessagePack back to JSON string

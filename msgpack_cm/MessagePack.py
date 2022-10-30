@@ -1,19 +1,41 @@
-import json
 import struct
 
-
 class MsgPack:
-
+    
     def __init__(self, useFloat=False):
         self.useFloat = useFloat
 
-    def jsonString_to_pack(self, jsonString:str):
-        try:
-            obj = json.loads(jsonString)
-        except:
-            raise "Parse json error."
+    def object_to_msg_byte(self, obj):
+        if obj is None: return [b'\xc0']
+        
+        if isinstance(obj, bool):
+            return [b'\xc3'] if obj else [b'\xc2']
 
-        return b''.join(self.object_to_msg_byte(obj))
+        elif isinstance(obj, int):
+            return self.int_to_msgType(obj)
+        
+        elif isinstance(obj, float):
+            if self.useFloat: return self.float_to_msgType(obj)
+            
+            return self.double_to_msgType(obj)
+
+        elif isinstance(obj, str):
+            try:
+                res = self.str_to_msgType(obj)
+            except Exception as e:
+                res = self.object_to_msg_byte(None)
+                print(f"Parse string error. \n{e}")
+            
+            return res
+
+        elif isinstance(obj, list):
+            return self.array_to_msgType(obj)
+
+        elif isinstance(obj, dict):
+            return self.map_to_msgType(obj)
+            
+        else:
+            raise ValueError("Object type error.")
 
     def int_to_msgType(self, obj:int):
         res = []
@@ -119,7 +141,7 @@ class MsgPack:
         res.append(obj)
 
         return res
-    
+
     def float_to_msgType(self, obj:float):
         ieee754Float = struct.unpack('>I',struct.pack('>f',obj))[0]
 
@@ -149,30 +171,3 @@ class MsgPack:
             res.extend(self.object_to_msg_byte(ele))
         
         return res
-
-
-    def object_to_msg_byte(self, obj):
-        if obj is None: return [b'\xc0']
-        
-        if isinstance(obj, bool):
-            return [b'\xc3'] if obj else [b'\xc2']
-
-        elif isinstance(obj, int):
-            return self.int_to_msgType(obj)
-        
-        elif isinstance(obj, float):
-            if self.useFloat: return self.float_to_msgType(obj)
-            
-            return self.double_to_msgType(obj)
-
-        elif isinstance(obj, str):
-            return self.str_to_msgType(obj)
-
-        elif isinstance(obj, list):
-            return self.array_to_msgType(obj)
-
-        elif isinstance(obj, dict):
-            return self.map_to_msgType(obj)
-            
-        else:
-            raise ValueError("Object type error.")
