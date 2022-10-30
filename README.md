@@ -18,3 +18,7 @@ jsonStringOutput = msgpack_cm.msgpack_to_json('''msgpack byte string''')
 
 > The default float type is IEEE 754 double precision. If you need IEEE 754 single precision, use `msgpack_cm.json_to_msgpack('{"input": "the JSON string"}', useFloat=True)` instead.
 > 
+
+## Limitation
+
+"Ext type" and "Timestamp type" are not defined since JSON isn't supported.

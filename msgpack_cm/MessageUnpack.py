@@ -41,7 +41,7 @@ class MsgUnpack:
             return self.__to_binary(size)
         
         elif ele <= int('0xC9', 16):
-            raise ValueError("Extern reserved.")
+            raise ValueError("Ext reserved.")
         
         elif ele <= int('0xCB', 16):
             # float/32/64
